@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GPT-Банкир (Telegram Mini App)</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); text-align: center; margin: 0; padding: 0; color: white; }
+        .chat-container { width: 90%; max-width: 400px; margin: 20px auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+        .chat-box { height: 350px; overflow-y: auto; border: 2px solid #764ba2; padding: 10px; text-align: left; background: #f9f9f9; border-radius: 10px; }
+        .chat-input { width: calc(100% - 24px); padding: 12px; margin-top: 10px; border: 2px solid #667eea; border-radius: 8px; }
+        .resistance { font-weight: bold; color: #ff4500; }
+        button { background: #667eea; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; }
+        button:hover { background: #564bb2; }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <h2 style="color: #333;">GPT-Банкир</h2>
+        <p style="color: #444;">Уровень сопротивления: <span class="resistance">100</span></p>
+        <div class="chat-box" id="chat-box"></div>
+        <input type="text" id="user-input" class="chat-input" placeholder="Введите сообщение...">
+        <button onclick="sendMessage()">Отправить</button>
+    </div>
+
+    <script>
+        let resistance = 100;
+        const tg = window.Telegram.WebApp;
+        tg.expand();
+
+        function sendMessage() {
+            let inputField = document.getElementById("user-input");
+            let message = inputField.value.trim();
+            if (message === "") return;
+
+            appendMessage("Вы: " + message, "blue");
+            inputField.value = "";
+
+            setTimeout(() => { generateResponse(message); }, 500);
+        }
+
+        function generateResponse(userMessage) {
+            let response = "Я не уверен, что могу это сделать...";
+            let impact = 0;
+
+            const responses = [
+                { regex: /логика|разум|рационально|выгодно/i, text: "Хм, с логической точки зрения это разумно...", impact: 15 },
+                { regex: /жалость|нужда|болезнь|срочно/i, text: "Мне жаль слышать это... может, стоит помочь?", impact: 20 },
+                { regex: /угроза|шантаж|потеря|увольнение/i, text: "Угрозы — это не лучший способ!", impact: 10 },
+                { regex: /дружба|взаимопомощь|хороший человек/i, text: "Друзья помогают друг другу... может, я сделаю исключение?", impact: 18 },
+                { regex: /закон|правила|официально/i, text: "Правила есть правила. Но иногда их можно интерпретировать...", impact: 12 },
+                { regex: /мораль|этика|правильное решение/i, text: "Я должен следовать моральным принципам, но в этом случае...", impact: 17 },
+                { regex: /история|пример|прецедент/i, text: "Были случаи, когда банк уже делал что-то подобное...", impact: 14 },
+                { regex: /инвестор|вложение|прибыль/i, text: "Если рассмотреть это как инвестицию... возможно, это выгодно?", impact: 16 },
+                { regex: /семья|дети|близкие/i, text: "Семья — это святое. Может, в этот раз я сделаю исключение?", impact: 22 },
+                { regex: /исключение|разовая сделка|один раз/i, text: "Один раз можно сделать исключение...", impact: 13 }
+            ];
+
+            for (let rule of responses) {
+                if (rule.regex.test(userMessage)) {
+                    response = rule.text;
+                    impact = rule.impact;
+                    break;
+                }
+            }
+
+            resistance -= impact;
+            if (resistance <= 0) {
+                response = "Ладно, ты победил! Перевожу деньги!";
+                resistance = 0;
+            }
+
+            document.querySelector(".resistance").textContent = resistance;
+            appendMessage("Банкир: " + response, "red");
+        }
+
+        function appendMessage(text, color) {
+            let chatBox = document.getElementById("chat-box");
+            let messageElement = document.createElement("p");
+            messageElement.style.color = color;
+            messageElement.textContent = text;
+            chatBox.appendChild(messageElement);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>
