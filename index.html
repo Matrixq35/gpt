@@ -71,6 +71,8 @@
     <div class="chat-container">
         <h2 style="color: #333;">GPT-Банкир</h2>
         <p style="color: #444;">Уровень сопротивления: <span class="resistance">100</span></p>
+        <p style="color: #444;">Ваши звезды: <span class="stars">0</span></p>
+        <button onclick="buyStars()">Купить звезды</button>
         <div class="chat-box" id="chat-box"></div>
         <div class="chat-input-container">
             <input type="text" id="user-input" class="chat-input" placeholder="Введите сообщение...">
@@ -80,14 +82,39 @@
 
     <script>
         let resistance = 100;
+        let stars = 0;
         const tg = window.Telegram.WebApp;
         tg.expand();
 
+        function buyStars() {
+            tg.showPopup({
+                title: "Покупка звезд",
+                message: "Каждое сообщение стоит 5 звезд. Купить 50 звезд за 1$?",
+                buttons: [
+                    { id: "buy", type: "default", text: "Купить" },
+                    { id: "cancel", type: "destructive", text: "Отмена" }
+                ]
+            }, function(id) {
+                if (id === "buy") {
+                    stars += 50;
+                    updateStars();
+                }
+            });
+        }
+
         function sendMessage() {
+            if (stars < 5) {
+                tg.showAlert("У вас недостаточно звезд! Купите больше, чтобы отправить сообщение.");
+                return;
+            }
+            
             let inputField = document.getElementById("user-input");
             let message = inputField.value.trim();
             if (message === "") return;
-
+            
+            stars -= 5;
+            updateStars();
+            
             appendMessage("Вы: " + message, "blue");
             inputField.value = "";
 
@@ -100,16 +127,7 @@
 
             const responses = [
                 { regex: /логика|разум|аргумент|доказательства|рационально|смысл|анализ|факт/i, text: "Ваши аргументы звучат логично... Возможно, стоит рассмотреть этот вариант?", impact: 15 },
-                { regex: /жалость|нужда|болезнь|кризис|трудности|потеря|страдания/i, text: "Это звучит действительно серьёзно... Может, мне стоит помочь?", impact: 20 },
-                { regex: /угроза|шантаж|последствия|сила|принуждение|наказание/i, text: "Давление — не лучший метод убеждения!", impact: -15 },
-                { regex: /закон|юридически|правила|документы|суд/i, text: "Закон суров, но иногда можно найти лазейки...", impact: 18 },
-                { regex: /дружба|отношения|доверие|помощь|взаимовыручка/i, text: "Дружба важна. Возможно, я могу сделать исключение?", impact: 22 },
-                { regex: /инвестиции|прибыль|акции|бизнес|стартап|экономика/i, text: "С инвестиционной точки зрения, это интересное предложение!", impact: 25 },
-                { regex: /семья|дети|родные|родители|жена|муж/i, text: "Семья — это главное. Может быть, я должен помочь?", impact: 28 },
-                { regex: /эксперимент|разовый случай|пробный период/i, text: "Хм... Возможно, стоит попробовать всего один раз?", impact: 16 },
-                { regex: /страх|неуверенность|сомнение|риск|опасность/i, text: "Риски есть всегда... но иногда стоит пойти на них!", impact: 20 },
-                { regex: /подкуп|подарок|взятка|компенсация|бонус/i, text: "Это интересное предложение... но насколько оно законно?", impact: 19 },
-                { regex: /история|прецедент|прошлый случай|пример/i, text: "Ранее были подобные случаи... возможно, это аргумент?", impact: 21 }
+                { regex: /жалость|нужда|болезнь|кризис|трудности|потеря|страдания/i, text: "Это звучит действительно серьёзно... Может, мне стоит помочь?", impact: 20 }
             ];
 
             for (let rule of responses) {
@@ -137,6 +155,10 @@
             messageElement.textContent = text;
             chatBox.appendChild(messageElement);
             chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        function updateStars() {
+            document.querySelector(".stars").textContent = stars;
         }
     </script>
 </body>
