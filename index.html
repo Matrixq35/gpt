@@ -2,17 +2,69 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <title>GPT-Банкир (Telegram Mini App)</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: linear-gradient(135deg, #667eea, #764ba2); text-align: center; margin: 0; padding: 0; color: white; }
-        .chat-container { width: 90%; max-width: 400px; margin: 20px auto; background: white; padding: 15px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
-        .chat-box { height: 350px; overflow-y: auto; border: 2px solid #764ba2; padding: 10px; text-align: left; background: #f9f9f9; border-radius: 10px; }
-        .chat-input { width: calc(100% - 24px); padding: 12px; margin-top: 10px; border: 2px solid #667eea; border-radius: 8px; }
-        .resistance { font-weight: bold; color: #ff4500; }
-        button { background: #667eea; color: white; border: none; padding: 10px 15px; border-radius: 8px; cursor: pointer; font-size: 16px; margin-top: 10px; }
-        button:hover { background: #564bb2; }
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            text-align: center;
+            color: white;
+            overflow: hidden;
+        }
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            padding: 10px;
+        }
+        .chat-box {
+            flex-grow: 1;
+            overflow-y: auto;
+            border: 2px solid #764ba2;
+            padding: 10px;
+            text-align: left;
+            background: #f9f9f9;
+            border-radius: 10px;
+            max-height: 70vh;
+        }
+        .chat-input-container {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+        }
+        .chat-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+        .resistance {
+            font-weight: bold;
+            color: #ff4500;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background: #564bb2;
+        }
     </style>
 </head>
 <body>
@@ -20,8 +72,10 @@
         <h2 style="color: #333;">GPT-Банкир</h2>
         <p style="color: #444;">Уровень сопротивления: <span class="resistance">100</span></p>
         <div class="chat-box" id="chat-box"></div>
-        <input type="text" id="user-input" class="chat-input" placeholder="Введите сообщение...">
-        <button onclick="sendMessage()">Отправить</button>
+        <div class="chat-input-container">
+            <input type="text" id="user-input" class="chat-input" placeholder="Введите сообщение...">
+            <button onclick="sendMessage()">➤</button>
+        </div>
     </div>
 
     <script>
